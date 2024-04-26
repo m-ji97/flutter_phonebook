@@ -41,7 +41,6 @@ class _ReadPageState extends State<_ReadPage> {
   void initState() {
     super.initState();
 
-
   }
 
   //화면그리기
