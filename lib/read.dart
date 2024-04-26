@@ -1,15 +1,23 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'PersonVo.dart';
+import 'package:phonebook/personVo.dart';
 
 class ReadPage extends StatelessWidget {
   const ReadPage({super.key});
 
+  //기본레이아웃
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("읽기페이지")),
-      body: _ReadPage()
+        appBar: AppBar(title: Text("읽기페이지")),
+        body: Container(
+          padding: EdgeInsets.all(15),
+          color: Color(0xffd6d6d6),
+          child: _ReadPage(),
+        )
     );
   }
 }
@@ -25,59 +33,67 @@ class _ReadPage extends StatefulWidget {
 //할일 정의 클래스(통신, 데이터적용)
 class _ReadPageState extends State<_ReadPage> {
 
-  //미래의 정우성 데이터가 담길거야
+
+  //변수. 미래에 정우성 데이터가 담긴다.
   late Future<PersonVo> personVoFuture;
 
-  //초기화함수(1번만 실행함)
+  //초기화함수(1번만 실행됨)
   @override
   void initState() {
     super.initState();
 
-    //추가코드 //데이터불러오기메소드 호출
-    print("initState(): 데이터 가져오기 전");
 
-    personVoFuture = getPersonByNo();
-
-    print("initState(): 데이터 가져오기 후");
   }
 
-  //화면 그리기
+  //화면그리기
   @override
   Widget build(BuildContext context) {
+    // ModalRoute를 통해 현재 페이지에 전달된 arguments를 가져옵니다.
+    late final args = ModalRoute.of(context)!.settings.arguments as Map;
+    // 'personId' 키를 사용하여 값을 추출합니다.
+    late final personId = args['personId'];
+
+    personVoFuture =getPersonByNo(personId);
+
+
     print("build(): 그리기 작업");
+
     return FutureBuilder(
       future: personVoFuture, //Future<> 함수명, 으로 받은 데이타
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('데이터를 불러오는데 실패했습니다.'));
-
-          } else if (!snapshot.hasData) {
-            return Center(child: Text('데이터가 없습니다.'));
-          } else { //데이터가 있으면
+          return Center(child: Text('데이터를 불러오는 데 실패했습니다.'));
+        } else if (!snapshot.hasData) {
+          return Center(child: Text('데이터가 없습니다.'));
+        } else {
+          //데이터가 있으면
           return Container(
-            color: Color(0xff696969),
-            padding: EdgeInsets.all(16),
-            child: Column(
+              padding: EdgeInsets.all(15),
+              color: Color(0xffd6d6d6),
+              child: Column(
                 children: [
                   Row(
                     children: [
                       Container(
                           width: 70,
                           height: 50,
-                          color: Color(0xffc4c4c4),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-
-                          //${snapshot.data!.personId}
-
-                          child: Text("번호", style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "번호",
+                            style: TextStyle(fontSize: 20),
+                          )),
                       Container(
-                          width: 398,
+                          width: 400,
                           height: 50,
-                          color: Color(0xffe5e5e5),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("${snapshot.data!.personId}",style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "${snapshot.data!.personId}",
+                            style: TextStyle(fontSize: 20),
+                          )),
                     ],
                   ),
                   Row(
@@ -85,15 +101,21 @@ class _ReadPageState extends State<_ReadPage> {
                       Container(
                           width: 70,
                           height: 50,
-                          color: Color(0xffc4c4c4),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("이름", style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "이름",
+                            style: TextStyle(fontSize: 20),
+                          )),
                       Container(
-                          width: 398,
+                          width: 400,
                           height: 50,
-                          color: Color(0xffe5e5e5),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("${snapshot.data!.name}",style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "${snapshot.data!.name}",
+                            style: TextStyle(fontSize: 20),
+                          )),
                     ],
                   ),
                   Row(
@@ -101,15 +123,21 @@ class _ReadPageState extends State<_ReadPage> {
                       Container(
                           width: 70,
                           height: 50,
-                          color: Color(0xffc4c4c4),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("핸드폰", style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "핸드폰",
+                            style: TextStyle(fontSize: 20),
+                          )),
                       Container(
-                          width: 398,
+                          width: 400,
                           height: 50,
-                          color: Color(0xffe5e5e5),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("${snapshot.data!.hp}",style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "${snapshot.data!.hp}",
+                            style: TextStyle(fontSize: 20),
+                          )),
                     ],
                   ),
                   Row(
@@ -117,32 +145,37 @@ class _ReadPageState extends State<_ReadPage> {
                       Container(
                           width: 70,
                           height: 50,
-                          color: Color(0xffc4c4c4),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("회사", style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "회사",
+                            style: TextStyle(fontSize: 20),
+                          )),
                       Container(
-                          width: 398,
+                          width: 400,
                           height: 50,
-                          color: Color(0xffe5e5e5),
+                          color: Color(0xffffffff),
                           alignment: Alignment.centerLeft,
-                          child: Text("${snapshot.data!.company}",style: TextStyle(fontSize: 24),)),
+                          child: Text(
+                            "${snapshot.data!.company}",
+                            style: TextStyle(fontSize: 20),
+                          )),
                     ],
                   ),
-                ]
-
-            ),
-          );
+                ],
+              ));
         } // 데이터가있으면
       },
-    );;
+    );
   }
 
   //3번(정우성) 데이타 가져오기 return 그림X
-  Future<PersonVo> getPersonByNo() async {
-    //코드작성
+  Future<PersonVo> getPersonByNo(int pId) async {
+    print("-----------------------------");
+    print(pId);
+    print("-----------------------------");
     try {
       /*----요청처리-------------------*/
-
       //Dio 객체 생성 및 설정
       var dio = Dio();
 
@@ -151,16 +184,15 @@ class _ReadPageState extends State<_ReadPage> {
 
       // 서버 요청
       final response = await dio.get(
-        'http://15.164.245.216:9000/api/persons/4',
+        'http://localhost:9000/api/persons/modify/${pId}',
       );
 
       /*----응답처리-------------------*/
       if (response.statusCode == 200) {
         //접속성공 200 이면
         print(response.data); // json->map 자동변경
-        print(response.data["apiData"]);
-        return PersonVo.fromJson(response.data["apiData"]);
-
+        //print(response.data["apiData"]);
+        return PersonVo.fromJson(response.data);
         //return PersonVo.fromJson(response.data["apiData"]);
       } else {
         //접속실패 404, 502등등 api서버 문제
@@ -168,8 +200,7 @@ class _ReadPageState extends State<_ReadPage> {
       }
     } catch (e) {
       //예외 발생
-      throw Exception('Falled to load person: $e');
+      throw Exception('Failed to load person: $e');
     }
   }
-
 }
