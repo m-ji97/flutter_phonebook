@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:phonebook/personVo.dart';
@@ -162,6 +161,35 @@ class _ReadPageState extends State<_ReadPage> {
                           )),
                     ],
                   ),
+                  SizedBox(
+                    child:
+                      Row(
+                        children: [
+                        Container(
+                          width: 200,
+                          height: 40,
+                          alignment: Alignment.center,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                print("수정");
+                              },
+                              child: Text('수정')),
+                      ),
+                        Container(
+                          width: 200,
+                          height: 40,
+                          alignment: Alignment.center,
+                            child: ElevatedButton(
+                            onPressed: () {
+                              print("삭제");
+                            },
+                            child: Text('삭제'),
+                            ),
+                      ),
+                    ],
+                  ),
+                  ),
+
                 ],
               ));
         } // 데이터가있으면
@@ -184,7 +212,7 @@ class _ReadPageState extends State<_ReadPage> {
 
       // 서버 요청
       final response = await dio.get(
-        'http://localhost:9000/api/persons/modify/${pId}',
+        'http://15.164.245.216:9000/api/persons/${pId}',
       );
 
       /*----응답처리-------------------*/
@@ -192,8 +220,8 @@ class _ReadPageState extends State<_ReadPage> {
         //접속성공 200 이면
         print(response.data); // json->map 자동변경
         //print(response.data["apiData"]);
-        return PersonVo.fromJson(response.data);
-        //return PersonVo.fromJson(response.data["apiData"]);
+        //return PersonVo.fromJson(response.data);
+        return PersonVo.fromJson(response.data["apiData"]);
       } else {
         //접속실패 404, 502등등 api서버 문제
         throw Exception('api 서버 문제');
